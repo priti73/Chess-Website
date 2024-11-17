@@ -61,7 +61,6 @@ const renderBoard = () => {
       boardElement.appendChild(squareElement);
     });
   });
-
   if (playerRole === "b") {
     boardElement.classList.add("flipped");
   } else {
@@ -128,6 +127,8 @@ socket.on("notYourTurn", function (message) {
 
 socket.on("opponentDisconnected", function (message) {
   alert(message);
+  chess.reset();
+  renderBoard()
 });
 
 renderBoard();

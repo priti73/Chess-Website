@@ -33,14 +33,17 @@ io.on("connection", function (uniquesocket) {
 
   uniquesocket.on("disconnect", function () {
     if (uniquesocket.id === players.white) {
-      delete players.white;
-      io.emit("opponentDisconnected", "White player has disconnected.");
-    } else if (uniquesocket.id === players.black) {
-      delete players.black;
-      io.emit("opponentDisconnected", "Black player has disconnected.");
-    }
+        delete players.white;
+        currentPlayer = "W"; 
+        chess.reset(); 
+        io.emit("opponentDisconnected", "White player has disconnected. The game has ended.");
+      } else if (uniquesocket.id === players.black) {
+        delete players.black;
+        currentPlayer = "W"; 
+        chess.reset(); 
+        io.emit("opponentDisconnected", "Black player has disconnected. The game has ended.");
+      }
   });
-
   uniquesocket.on("move", (move) => {
     try {
       if (chess.turn() === "w" && uniquesocket.id !== players.white) {
@@ -57,9 +60,8 @@ io.on("connection", function (uniquesocket) {
         currentPlayer = chess.turn();
         io.emit("move", move);
         io.emit("boardState", chess.fen());
-      } else {
-        uniquesocket.emit("invalidMove", move);
-      }
+      } 
+    
     } catch (err) {
       uniquesocket.emit("invalidMove", move);
     }
